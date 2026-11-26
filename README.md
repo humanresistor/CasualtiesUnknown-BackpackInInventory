@@ -4,7 +4,7 @@
 
 - 中文 | [English](#english)
 - 游戏版本：Casualties: Unknown **1.0.2**（正式版）
-- 当前版本：**v1.2.1**
+- 当前版本：**v1.2.2**
 
 > ### ⚠️ AI 生成声明 / AI Disclosure
 > **本项目的全部代码与文档由 AI（DeepSeek Harness 智能体）编写**，人类只提需求、做测试与验收。
@@ -87,7 +87,16 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 - 会影响平衡：护甲、衣物从此可以像普通物品一样收纳，也可以拿在手里
 - 默认 false，只影响你明确列出的可穿戴容器
 
-### 配置
+#### 附带修复：多肢体贴图残影
+
+原版 `Body.PickUpItem`（把物品放进物品栏槽位）**不会调用** `Wearable.ClearSprites()`，而 `Wearable.secondaryLimbs`
+机制会让一件装备在多个肢体上各画一份贴图（围巾、喷气背包那类）。结果就是物品已经进了物品栏，
+身上那几份副贴图还挂着，出现“脱了但残影还在”。
+
+本插件在拾取成功后补调一次 `ClearSprites()`（不在身上的物品调用它是空操作），开关是
+`ClearWearableSpritesOnPickup`（默认 true）。
+
+## 配置
 
 配置文件位置：游戏目录下 BepInEx/config/humanresistor.cu.backpackininventory.cfg
 
@@ -99,6 +108,7 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 | Inventory / ExtraItemIds | 空 | 额外强制放开的物品 id |
 | Inventory / BlacklistItemIds | 空 | 永不改动 |
 | Inventory / VerboseLog | true | 逐个打印放开的物品 |
+| Inventory / ClearWearableSpritesOnPickup | true | 防御性补丁：穿戴物放进物品栏时清理多肢体贴图残影 |
 
 注意：BepInEx 优先读取已存在的配置文件，**改代码里的默认值不会覆盖已有配置**，需要同步改配置或删掉它重新生成。
 
@@ -189,6 +199,7 @@ Config file: BepInEx/config/humanresistor.cu.backpackininventory.cfg
 | Inventory / ExtraItemIds | (empty) | Extra item ids, comma separated |
 | Inventory / BlacklistItemIds | (empty) | Never touch these items |
 | Inventory / VerboseLog | true | Log every unlocked item |
+| Inventory / ClearWearableSpritesOnPickup | true | Defensive patch: clear multi-limb sprites when a wearable is put into an inventory slot |
 
 ### Similar mod
 
