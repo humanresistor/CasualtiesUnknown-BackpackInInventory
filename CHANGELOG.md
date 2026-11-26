@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.2
+- 新增防御性补丁：穿戴物放进物品栏槽位后调用 Wearable.ClearSprites()，修复多肢体贴图残影（配置项 ClearWearableSpritesOnPickup）
+
 ## 1.2.1
 - 插件标识前缀改为 humanresistor，配置文件名随之变化（humanresistor.cu.backpackininventory.cfg）
 - 升级时把旧配置文件改名为新文件名即可保留设置，也可删掉让插件重新生成默认配置
