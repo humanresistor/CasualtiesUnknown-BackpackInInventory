@@ -15,6 +15,11 @@
 > 采用 [MIT](LICENSE) 协议：**任何人都可以自由拿去修改、再发布、商用、闭源二次分发**，只需保留版权与许可声明。
 > Licensed under MIT: **anyone may fork, modify, redistribute, or use it commercially, including in closed-source form**, provided the copyright and license notice are kept.
 
+> ### 🏠 自制自用 / Made for personal use
+> 本插件是**为自己玩而写的自制插件**，实现来自对游戏本体 Assembly-CSharp.dll 的反编译分析，**未参考、未复制任何第三方 mod 的源码**。
+> 若与其他 mod 功能相似、或实现思路接近，**纯属巧合**。
+> This plugin was written **for personal use**. The implementation comes from decompiling the game itself (Assembly-CSharp.dll) — **no third-party mod source code was referenced or copied**. Any resemblance to other mods is purely coincidental.
+
 ---
 
 ## 它解决什么问题
