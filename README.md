@@ -1,6 +1,6 @@
 # Backpack In Inventory — Casualties: Unknown
 
-> 未知伤亡（Casualties: Unknown）的 BepInEx 5 插件：**允许把可穿戴容器（双肩包、材料包、腿包、腰带、弹药带、腰包）放进物品栏槽位。**
+> 未知伤亡（Casualties: Unknown）的 BepInEx 5 插件：**让双肩背包、材料包、腿包、皮带、子弹带、腰包这类可穿戴容器，也能放进物品栏槽位。**
 
 - 中文 | [English](#english)
 - 游戏版本：Casualties: Unknown **1.0.2**（正式版）
@@ -19,14 +19,14 @@
 
 ## 它解决什么问题
 
-原版里，凡是带 `wearable` 标记的物品（背包、材料包、腰带、弹药带、腰包……）**都不能放进物品栏槽位**：
-把它们拖到物品栏的位置，游戏只会弹一句"这东西只能穿戴"，然后什么都不发生。
+游戏里能穿戴的容器（双肩背包、材料包、皮带……）原本**只能穿在身上**：把它们拖到物品栏，游戏只会弹一句
+「可穿戴设备无法被手持（试试佩戴/存放？）」，然后什么都不发生。
 
-本插件放开的就是这一条限制 —— 这些容器穿上身之后照样能当普通物品塞进物品栏的空槽。
+本插件放开的就是这一条限制 —— 这些容器穿上身之后，照样能当普通物品塞进物品栏的空槽位。
 
 ### 保留的原版机制（没有改动）
 
-- **空容器仍可放进另一个容器**（比如空背包塞进空背包）—— 这是原版设定，插件没碰。
+- **空容器仍可放进另一个容器**（比如空的双肩背包塞进另一个空的双肩背包）—— 这是原版设定，插件没碰。
 - **装着东西的容器不能放进别的容器** —— 原版会拦下，插件同样不放开。
 - 外层容器自己已经被装在别的容器里时，也不允许再往里塞（原版用来防无限嵌套）。
 
@@ -36,7 +36,7 @@
 
 ### 原理
 
-反编译 1.0.2 的 `Assembly-CSharp.dll` 后确认，拦住"可穿戴物品放进物品栏"的只有一处：
+反编译 1.0.2 的 Assembly-CSharp.dll 后确认，拦住"可穿戴物品放进物品栏"的只有一处：
 
 ```csharp
 // PlayerCamera.TryPerformInventoryAction
@@ -51,45 +51,47 @@ if (component.isBody)
 }
 ```
 
-`ItemInfo.wearableCanBeHeld` 全库只有这一处读取（`autopump` 把它设为 true 作示例）。
-物品数据在 `Item.GlobalItems`，由 `Item.SetupItems()` 在进入世界时填充。
+物品数据里的 wearableCanBeHeld 字段，全库只有这一处读取（自动输液泵 autopump 把它设为 true 作示例）。
+物品表在 Item.GlobalItems，由 Item.SetupItems() 在进入世界时填充。
 
-插件做法：Harmony.Postfix 挂在 `Item.SetupItems` 之后，把 `wearSlotId` 属于配置槽位（默认覆盖所有可穿戴容器）且
-`wearableCanBeHeld == false` 的物品改成 true。另有 2 秒轮询兜底，防止 `SetupItems` 早于插件加载。
+插件做法：Harmony 后置补丁挂在 Item.SetupItems 之后，把穿戴槽位属于配置范围（默认覆盖所有可穿戴容器）
+且 wearableCanBeHeld 为 false 的物品改成 true。另有 2 秒轮询兜底，防止 SetupItems 早于插件加载。
 
-不碰 UI、不碰拖放逻辑、不改 `Container.LoadItem`。
+不碰 UI、不碰拖放逻辑、不改 Container.LoadItem。
 
 ### 默认放开的槽位
 
-`WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront`
+WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 
-| 槽位 | 对应物品 |
+| 穿戴槽位 | 对应物品（官方中文名 / 内部 id） |
 |---|---|
-| `back` | 双肩包 bigpack、行旅袋 duffelbag、小背包 smallpack、单肩包 slingbag |
-| `thighback` | 材料包 materialpouch |
-| `thigh` | 腿包 legpouch |
-| `belt` | 腰带 belt |
-| `bandolier` | 弹药带 bandolier |
-| `torsofront` | 腰包 fannypack、液体袋 liquidpouch、创伤背心 traumarig |
+| back | 双肩背包 bigpack、帆布背包 duffelbag、小型背包 smallpack、植物纤维挎包 slingbag |
+| thighback | 材料包 materialpouch |
+| thigh | 腿包 legpouch |
+| belt | 皮带 belt |
+| bandolier | 子弹带 bandolier |
+| torsofront | 腰包 fannypack、随身水包 liquidpouch、战术胸挂 traumarig |
+
+（喷气背包 jetpack 也在 back 槽，会一起被放开。）
 
 ### 配置
 
-`<游戏>\BepInEx\config\humanresistor.cu.backpackininventory.cfg`
+配置文件位置：游戏目录下 BepInEx/config/humanresistor.cu.backpackininventory.cfg
 
 | 键 | 默认 | 说明 |
 |---|---|---|
-| Inventory/Enabled | true | 总开关 |
-| Inventory/WearSlotIds | 见上表 | 允许进物品栏的穿戴槽位，逗号分隔 |
-| Inventory/ExtraItemIds | 空 | 额外强制放开的物品 id |
-| Inventory/BlacklistItemIds | 空 | 永不改动 |
-| Inventory/VerboseLog | true | 逐个打印放开的物品 |
+| Inventory / Enabled | true | 总开关 |
+| Inventory / WearSlotIds | 见上表 | 允许进物品栏的穿戴槽位，逗号分隔 |
+| Inventory / ExtraItemIds | 空 | 额外强制放开的物品 id |
+| Inventory / BlacklistItemIds | 空 | 永不改动 |
+| Inventory / VerboseLog | true | 逐个打印放开的物品 |
 
-> BepInEx 优先读取已存在的 cfg，**改代码默认值不会覆盖已有配置**，需要同步改 cfg 或删掉它重新生成。
+注意：BepInEx 优先读取已存在的配置文件，**改代码里的默认值不会覆盖已有配置**，需要同步改配置或删掉它重新生成。
 
 ### 安装
 
-1. 游戏目录装 [BepInEx 5.4.23.5 x64](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.5)（解压到游戏根目录，出现 `winhttp.dll` + `BepInEx/`）
-2. 把 `BackpackInInventory.dll` 放进 `<游戏>\BepInEx\plugins\`
+1. 游戏目录装 BepInEx 5.4.23.5 x64（解压到游戏根目录，出现 winhttp.dll 和 BepInEx 文件夹）
+2. 把 BackpackInInventory.dll 放进 BepInEx/plugins/ 目录
 3. 启动游戏
 
 DLL 被游戏占用时无法覆盖，更新前先退出游戏。
@@ -104,32 +106,32 @@ dotnet build -c Release
 ```
 
 - 目标框架必须 **netstandard2.1**（游戏程序集是 2.1，用 2.0 会报 CS1705）
-- 引用：`BepInEx/core/BepInEx.dll`、`0Harmony.dll`、
-  `CasualtiesUnknown_Data/Managed/{Assembly-CSharp, UnityEngine, UnityEngine.CoreModule}.dll`
-- `GameDir` 在 csproj 里配置成本机游戏路径
+- 需要引用 BepInEx/core/BepInEx.dll、0Harmony.dll，以及游戏 Managed 目录下的
+  Assembly-CSharp.dll、UnityEngine.dll、UnityEngine.CoreModule.dll
+- 本机游戏路径在 csproj 的 GameDir 属性里配置
 
 ### 调试
 
-游戏内控制台（反引号 `）：`spawn bigpack`、`spawn materialpouch`、`spawn duffelbag`、`spawn slingbag`。
-日志：`<游戏>\BepInEx\LogOutput.log`，搜 `Backpack In Inventory`。
+游戏内控制台（数字 1 左边那个反引号键）：spawn bigpack、spawn materialpouch、spawn duffelbag、spawn slingbag。
+日志：游戏目录下 BepInEx/LogOutput.log，搜索 Backpack In Inventory。
 
 ---
 
 ## English
 
 A tiny BepInEx 5 plugin for **Casualties: Unknown 1.0.2** that lets wearable containers
-(backpack, material pouch, leg pouch, belt, bandolier, fanny pack) **be placed into inventory slots**.
+(backpack, duffel bag, material pouch, leg pouch, belt, bandolier, fanny pack) **be placed into inventory slots**.
 
-In vanilla, any item flagged `wearable` cannot be put into inventory slots — dragging it there
-only shows a "this can only be worn" alert. Vanilla blocks it with a single check in
-`PlayerCamera.TryPerformInventoryAction`:
+In vanilla, items flagged as wearable cannot go into inventory slots — dragging one there only shows
+the alert "Wearables can't be held in hand (Wear/store it instead?)". Vanilla blocks it with a single check:
 
 ```csharp
+// PlayerCamera.TryPerformInventoryAction
 if (dragItem.Stats.wearable && !dragItem.Stats.wearableCanBeHeld) { /* refuse */ }
 ```
 
-The plugin simply sets `ItemInfo.wearableCanBeHeld = true` for wearables whose `wearSlotId`
-is in the configured list, right after `Item.SetupItems()` runs (plus a 2-second polling safety net).
+The plugin sets wearableCanBeHeld to true for wearables whose wear slot is in the configured list,
+right after Item.SetupItems() runs (plus a 2-second polling safety net).
 
 ### Vanilla behaviour that is kept
 
@@ -140,25 +142,25 @@ Container-in-container rules are **untouched**:
 - If the outer container is already nested inside something else, no further nesting is allowed.
 
 The plugin only affects "can this wearable go into an inventory slot", nothing else.
-It does **not** touch UI, drag-and-drop logic, or `Container.LoadItem`.
+It does **not** touch UI, drag-and-drop logic, or Container.LoadItem.
 
 ### Install
 
-1. Install [BepInEx 5.4.23.5 x64](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.5) into the game root.
-2. Drop `BackpackInInventory.dll` into `<Game>\BepInEx\plugins\`.
-3. Launch the game (through Steam).
+1. Install BepInEx 5.4.23.5 x64 into the game root.
+2. Drop BackpackInInventory.dll into the BepInEx/plugins/ folder.
+3. Launch the game through Steam.
 
 ### Configuration
 
-`<Game>\BepInEx\config\humanresistor.cu.backpackininventory.cfg`
+Config file: BepInEx/config/humanresistor.cu.backpackininventory.cfg
 
 | Key | Default | Meaning |
 |---|---|---|
-| Inventory/Enabled | true | Master switch |
-| Inventory/WearSlotIds | back,thighback,thigh,belt,bandolier,torsofront | Wear slots allowed into inventory |
-| Inventory/ExtraItemIds | (empty) | Extra item ids, comma separated |
-| Inventory/BlacklistItemIds | (empty) | Never touch these items |
-| Inventory/VerboseLog | true | Log every unlocked item |
+| Inventory / Enabled | true | Master switch |
+| Inventory / WearSlotIds | back,thighback,thigh,belt,bandolier,torsofront | Wear slots allowed into inventory |
+| Inventory / ExtraItemIds | (empty) | Extra item ids, comma separated |
+| Inventory / BlacklistItemIds | (empty) | Never touch these items |
+| Inventory / VerboseLog | true | Log every unlocked item |
 
 ---
 
@@ -168,7 +170,7 @@ It does **not** touch UI, drag-and-drop logic, or `Container.LoadItem`.
 |---|---|---|
 | 1.1.2 | Casualties: Unknown 1.0.2 (full game) | current |
 
-Only tested on the full game 1.0.2. The Demo (v7.0.1) has a different `ItemInfo` layout and is untested.
+Only tested on the full game 1.0.2. The Demo (v7.0.1) has a different item-info layout and is untested.
 
 ## 免责声明 / Disclaimer
 
