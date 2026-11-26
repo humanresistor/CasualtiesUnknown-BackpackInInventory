@@ -1,8 +1,8 @@
 # Changelog
 
 ## 1.2.1
-- 插件 标识前缀统一为 humanresistor，配置文件随之改名为 humanresistor.cu.backpackininventory.cfg
-- 旧配置会自动迁移（首次安装 1.2.1 时请把旧的 humanresistor.cu.backpackininventory.cfg 改名，或直接让插件重新生成默认配置）
+- 插件标识前缀改为 humanresistor，配置文件名随之变化（humanresistor.cu.backpackininventory.cfg）
+- 升级时把旧配置文件改名为新文件名即可保留设置，也可删掉让插件重新生成默认配置
 
 ## 1.2.0
 - 新增 AllWearables 开关（默认 false）：打开后放开所有 wearable 物品（含护甲、衣服、头盔），忽略 WearSlotIds
