@@ -15,7 +15,7 @@ namespace BackpackInInventory
     public class Plugin : BaseUnityPlugin
     {
         public const string Guid = "humanresistor.cu.backpackininventory";
-        public const string Version = "1.2.1";
+        public const string Version = "1.2.2";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> CfgEnabled;
@@ -24,6 +24,7 @@ namespace BackpackInInventory
         internal static ConfigEntry<string> CfgExtraIds;
         internal static ConfigEntry<string> CfgBlacklist;
         internal static ConfigEntry<bool> CfgVerbose;
+        internal static ConfigEntry<bool> CfgClearSprites;
 
         private static Dictionary<string, ItemInfo> lastTable;
         private static readonly HashSet<string> done = new HashSet<string>();
@@ -37,8 +38,11 @@ namespace BackpackInInventory
             CfgExtraIds = Config.Bind("Inventory", "ExtraItemIds", "", "额外强制允许的物品 id，逗号分隔（不受槽位限制）。");
             CfgBlacklist = Config.Bind("Inventory", "BlacklistItemIds", "", "永远不改动的物品 id，逗号分隔。");
             CfgVerbose = Config.Bind("Inventory", "VerboseLog", true, "放开每个物品时在日志里打印一行。");
+            CfgClearSprites = Config.Bind("Inventory", "ClearWearableSpritesOnPickup", true, "防御性补丁：穿戴物放进物品栏槽位时清理多肢体贴图，避免残影。");
 
-            new Harmony(Guid).PatchAll(typeof(SetupItemsPatch));
+            Harmony harmony = new Harmony(Guid);
+            harmony.PatchAll(typeof(SetupItemsPatch));
+            harmony.PatchAll(typeof(PickUpClearSpritesPatch));
 
             var go = new GameObject("BackpackInInventory.Watcher");
             Object.DontDestroyOnLoad(go);
@@ -117,6 +121,26 @@ namespace BackpackInInventory
         private static void Postfix()
         {
             Plugin.Apply("SetupItems");
+        }
+    }
+}
+
+namespace BackpackInInventory
+{
+    /// <summary>
+    /// 防御性补丁：多肢体穿戴物（Wearable.secondaryLimbs）被放进物品栏槽位时，
+    /// 原版 Body.PickUpItem 不会调用 Wearable.ClearSprites()，导致挂在其它肢体上的贴图残影。
+    /// 这里在拾取成功后统一清理一次（不在身上的物品 ClearSprites 是空操作）。
+    /// </summary>
+    [HarmonyPatch(typeof(Body), nameof(Body.PickUpItem))]
+    internal static class PickUpClearSpritesPatch
+    {
+        [HarmonyPostfix]
+        private static void Postfix(Item item)
+        {
+            if (!Plugin.CfgClearSprites.Value || item == null) return;
+            Wearable wearable = item.GetComponent<Wearable>();
+            if (wearable != null) wearable.ClearSprites();
         }
     }
 }
