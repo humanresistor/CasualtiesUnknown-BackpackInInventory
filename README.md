@@ -19,16 +19,24 @@
 
 ## 它解决什么问题
 
-原版里背包、材料包这类"可穿戴容器"只能穿在身上（`back` / `thighback` / `thigh` / `belt` / `bandolier` / `torsofront` 等槽位），
-**拖进物品栏会被拦下**并提示"这东西只能穿戴"。本插件放开这条限制。
+原版里，凡是带 `wearable` 标记的物品（背包、材料包、腰带、弹药带、腰包……）**都不能放进物品栏槽位**：
+把它们拖到物品栏的位置，游戏只会弹一句"这东西只能穿戴"，然后什么都不发生。
 
-**不会**做的事：容器套容器（背包放进背包）保持原版行为，未做任何改动。
+本插件放开的就是这一条限制 —— 这些容器穿上身之后照样能当普通物品塞进物品栏的空槽。
+
+### 保留的原版机制（没有改动）
+
+- **空容器仍可放进另一个容器**（比如空背包塞进空背包）—— 这是原版设定，插件没碰。
+- **装着东西的容器不能放进别的容器** —— 原版会拦下，插件同样不放开。
+- 外层容器自己已经被装在别的容器里时，也不允许再往里塞（原版用来防无限嵌套）。
+
+换句话说：**容器之间怎么嵌套完全维持原版**，插件只影响"能不能进物品栏槽位"这一件事。
 
 ## 中文说明
 
 ### 原理
 
-反编译 1.0.2 的 `Assembly-CSharp.dll` 后确认，拦住"可穿戴物品放进身体槽位"的只有一处：
+反编译 1.0.2 的 `Assembly-CSharp.dll` 后确认，拦住"可穿戴物品放进物品栏"的只有一处：
 
 ```csharp
 // PlayerCamera.TryPerformInventoryAction
@@ -110,10 +118,11 @@ dotnet build -c Release
 ## English
 
 A tiny BepInEx 5 plugin for **Casualties: Unknown 1.0.2** that lets wearable containers
-(backpack, material pouch, leg pouch, belt, bandolier, fanny pack) **be placed into inventory slots**
-instead of being wearable-only.
+(backpack, material pouch, leg pouch, belt, bandolier, fanny pack) **be placed into inventory slots**.
 
-Vanilla blocks this with a single check in `PlayerCamera.TryPerformInventoryAction`:
+In vanilla, any item flagged `wearable` cannot be put into inventory slots — dragging it there
+only shows a "this can only be worn" alert. Vanilla blocks it with a single check in
+`PlayerCamera.TryPerformInventoryAction`:
 
 ```csharp
 if (dragItem.Stats.wearable && !dragItem.Stats.wearableCanBeHeld) { /* refuse */ }
@@ -121,8 +130,17 @@ if (dragItem.Stats.wearable && !dragItem.Stats.wearableCanBeHeld) { /* refuse */
 
 The plugin simply sets `ItemInfo.wearableCanBeHeld = true` for wearables whose `wearSlotId`
 is in the configured list, right after `Item.SetupItems()` runs (plus a 2-second polling safety net).
-It does **not** touch UI, drag-and-drop logic, or `Container.LoadItem`, so container-in-container
-nesting keeps its vanilla behaviour.
+
+### Vanilla behaviour that is kept
+
+Container-in-container rules are **untouched**:
+
+- An **empty** container may still be put into another container (vanilla behaviour).
+- A container **holding items** cannot be put into another container (vanilla blocks it).
+- If the outer container is already nested inside something else, no further nesting is allowed.
+
+The plugin only affects "can this wearable go into an inventory slot", nothing else.
+It does **not** touch UI, drag-and-drop logic, or `Container.LoadItem`.
 
 ### Install
 
