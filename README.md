@@ -4,7 +4,7 @@
 
 - 中文 | [English](#english)
 - 游戏版本：Casualties: Unknown **1.0.2**（正式版）
-- 当前版本：**v1.2.0**
+- 当前版本：**v1.2.1**
 
 > ### ⚠️ AI 生成声明 / AI Disclosure
 > **本项目的全部代码与文档由 AI（DeepSeek Harness 智能体）编写**，人类只提需求、做测试与验收。
@@ -202,6 +202,7 @@ thing with a wider, unconditional scope and no configuration. Both patch the sam
 
 | Plugin | Game | Notes |
 |---|---|---|
+| 1.2.1 | Casualties: Unknown 1.0.2 (full game) | GUID 前缀改为 humanresistor，配置文件名随之变化 |
 | 1.2.0 | Casualties: Unknown 1.0.2 (full game) | 新增 AllWearables 开关 / adds AllWearables switch |
 | 1.1.2 | Casualties: Unknown 1.0.2 (full game) | 默认槽位覆盖所有可穿戴容器 |
 | 1.1.1 | Casualties: Unknown 1.0.2 (full game) | 移除误加的容器嵌套功能 |

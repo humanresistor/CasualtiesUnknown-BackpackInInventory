@@ -15,7 +15,7 @@ namespace BackpackInInventory
     public class Plugin : BaseUnityPlugin
     {
         public const string Guid = "humanresistor.cu.backpackininventory";
-        public const string Version = "1.2.0";
+        public const string Version = "1.2.1";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> CfgEnabled;
