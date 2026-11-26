@@ -4,7 +4,7 @@
 
 - 中文 | [English](#english)
 - 游戏版本：Casualties: Unknown **1.0.2**（正式版）
-- 当前版本：**v1.1.2**
+- 当前版本：**v1.2.0**
 
 > ### ⚠️ AI 生成声明 / AI Disclosure
 > **本项目的全部代码与文档由 AI（DeepSeek Harness 智能体）编写**，人类只提需求、做测试与验收。
@@ -74,6 +74,14 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 
 （喷气背包 jetpack 也在 back 槽，会一起被放开。）
 
+### 全部放开（可选，默认关）
+
+如果你希望**连护甲、衣服、头盔之类也都能手持 / 放进物品栏**，把配置里的 AllWearables 改成 true 即可：
+
+- 打开后忽略槽位列表，对所有带 wearable 标记的物品生效（和同类 mod 的做法一致）
+- 会影响平衡：护甲、衣物从此可以像普通物品一样收纳，也可以拿在手里
+- 默认 false，只影响你明确列出的可穿戴容器
+
 ### 配置
 
 配置文件位置：游戏目录下 BepInEx/config/humanresistor.cu.backpackininventory.cfg
@@ -82,6 +90,7 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 |---|---|---|
 | Inventory / Enabled | true | 总开关 |
 | Inventory / WearSlotIds | 见上表 | 允许进物品栏的穿戴槽位，逗号分隔 |
+| Inventory / AllWearables | false | 放开**所有** wearable（含护甲/衣服/头盔），忽略槽位列表 |
 | Inventory / ExtraItemIds | 空 | 额外强制放开的物品 id |
 | Inventory / BlacklistItemIds | 空 | 永不改动 |
 | Inventory / VerboseLog | true | 逐个打印放开的物品 |
@@ -115,6 +124,11 @@ dotnet build -c Release
 游戏内控制台（数字 1 左边那个反引号键）：spawn bigpack、spawn materialpouch、spawn duffelbag、spawn slingbag。
 日志：游戏目录下 BepInEx/LogOutput.log，搜索 Backpack In Inventory。
 
+### 同类 mod
+
+Nexus 上还有一个范围更大的同类：[All Wearable Can Be Held](https://www.nexusmods.com/scavprototype/mods/369)（作者 winddramon），
+它无条件放开所有 wearable，没有配置项。两者改的是同一个游戏字段，**不要同时安装**。
+
 ---
 
 ## English
@@ -144,6 +158,14 @@ Container-in-container rules are **untouched**:
 The plugin only affects "can this wearable go into an inventory slot", nothing else.
 It does **not** touch UI, drag-and-drop logic, or Container.LoadItem.
 
+### Unlock everything (optional, off by default)
+
+Set AllWearables to true if you also want **armor, clothing and helmets** to be holdable / storable:
+
+- Ignores WearSlotIds and applies to every item flagged wearable
+- Affects balance: armor and clothes can then be stowed and carried like normal items
+- Default false; by default only the listed wearable containers are affected
+
 ### Install
 
 1. Install BepInEx 5.4.23.5 x64 into the game root.
@@ -158,9 +180,16 @@ Config file: BepInEx/config/humanresistor.cu.backpackininventory.cfg
 |---|---|---|
 | Inventory / Enabled | true | Master switch |
 | Inventory / WearSlotIds | back,thighback,thigh,belt,bandolier,torsofront | Wear slots allowed into inventory |
+| Inventory / AllWearables | false | Unlock every wearable item (armor, clothing, helmets), ignoring the slot list |
 | Inventory / ExtraItemIds | (empty) | Extra item ids, comma separated |
 | Inventory / BlacklistItemIds | (empty) | Never touch these items |
 | Inventory / VerboseLog | true | Log every unlocked item |
+
+### Similar mod
+
+[All Wearable Can Be Held](https://www.nexusmods.com/scavprototype/mods/369) by winddramon does the same
+thing with a wider, unconditional scope and no configuration. Both patch the same game field —
+**do not install both**.
 
 ---
 
@@ -168,7 +197,9 @@ Config file: BepInEx/config/humanresistor.cu.backpackininventory.cfg
 
 | Plugin | Game | Notes |
 |---|---|---|
-| 1.1.2 | Casualties: Unknown 1.0.2 (full game) | current |
+| 1.2.0 | Casualties: Unknown 1.0.2 (full game) | 新增 AllWearables 开关 / adds AllWearables switch |
+| 1.1.2 | Casualties: Unknown 1.0.2 (full game) | 默认槽位覆盖所有可穿戴容器 |
+| 1.1.1 | Casualties: Unknown 1.0.2 (full game) | 移除误加的容器嵌套功能 |
 
 Only tested on the full game 1.0.2. The Demo (v7.0.1) has a different item-info layout and is untested.
 

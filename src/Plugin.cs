@@ -15,10 +15,11 @@ namespace BackpackInInventory
     public class Plugin : BaseUnityPlugin
     {
         public const string Guid = "humanresistor.cu.backpackininventory";
-        public const string Version = "1.1.2";
+        public const string Version = "1.2.0";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> CfgEnabled;
+        internal static ConfigEntry<bool> CfgAllWearables;
         internal static ConfigEntry<string> CfgSlotIds;
         internal static ConfigEntry<string> CfgExtraIds;
         internal static ConfigEntry<string> CfgBlacklist;
@@ -31,6 +32,7 @@ namespace BackpackInInventory
         {
             Log = Logger;
             CfgEnabled = Config.Bind("Inventory", "Enabled", true, "允许把可穿戴容器（背包等）放进物品栏槽位。");
+            CfgAllWearables = Config.Bind("Inventory", "AllWearables", false, "放开所有可穿戴物品（含护甲、衣服、头盔），不再只看槽位列表。默认关闭。" + System.Environment.NewLine + "Unlock every wearable item (armor, clothing, helmets), not just the listed wear slots. Off by default.");
             CfgSlotIds = Config.Bind("Inventory", "WearSlotIds", "back,thighback,thigh,belt,bandolier,torsofront", "这些穿戴槽位上的物品允许被放进物品栏，逗号分隔。");
             CfgExtraIds = Config.Bind("Inventory", "ExtraItemIds", "", "额外强制允许的物品 id，逗号分隔（不受槽位限制）。");
             CfgBlacklist = Config.Bind("Inventory", "BlacklistItemIds", "", "永远不改动的物品 id，逗号分隔。");
@@ -70,7 +72,7 @@ namespace BackpackInInventory
                 string id = kv.Key.ToLowerInvariant();
                 if (black.Contains(id) || done.Contains(id)) continue;
 
-                bool match = extra.Contains(id) || (info.wearSlotId != null && slots.Contains(info.wearSlotId.ToLowerInvariant()));
+                bool match = CfgAllWearables.Value || extra.Contains(id) || (info.wearSlotId != null && slots.Contains(info.wearSlotId.ToLowerInvariant()));
                 if (!match) continue;
 
                 info.wearableCanBeHeld = true;
