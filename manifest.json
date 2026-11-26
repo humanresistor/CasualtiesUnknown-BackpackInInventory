@@ -1,8 +1,8 @@
 {
-  "name": "BackpackInInventory",
+  "name": "CasualtiesUnknown_BackpackInInventory",
   "version_number": "1.1.2",
-  "website_url": "",
-  "description": "Allows wearable containers (backpack, material pouch, etc.) to be placed into inventory slots. 允许把背包/材料包等可穿戴容器放进物品栏。",
+  "website_url": "https://github.com/humanresistor/CasualtiesUnknown-BackpackInInventory",
+  "description": "未知伤亡 (Casualties: Unknown) - allow wearable containers (backpack, material pouch, belt, bandolier) into inventory slots. Written by an AI assistant. MIT, modify freely.",
   "dependencies": [
     "BepInEx-BepInExPack-5.4.2305"
   ]
