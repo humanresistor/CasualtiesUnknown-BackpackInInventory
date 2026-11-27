@@ -112,6 +112,12 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 
 注意：BepInEx 优先读取已存在的配置文件，**改代码里的默认值不会覆盖已有配置**，需要同步改配置或删掉它重新生成。
 
+> **升级提示 / After upgrading**：BepInEx **不会覆盖已存在的配置值**（BepInEx does not overwrite existing config values）。
+> 旧 `cfg` 里保留的是你原来的设置；新版本若改了某些默认值（例如把日志默认关掉），
+> 需要手动改，或直接删掉 `cfg` 让插件按新默认值重新生成。
+> The old cfg keeps your previous values; if a new version changes a default (e.g. logging now off),
+> edit the cfg manually or delete it so the plugin regenerates it.
+
 ## 安装
 
 1. 游戏目录装 BepInEx 5.4.23.5 x64（解压到游戏根目录，出现 winhttp.dll 和 BepInEx 文件夹）
