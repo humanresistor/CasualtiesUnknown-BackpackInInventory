@@ -15,7 +15,7 @@ namespace BackpackInInventory
     public class Plugin : BaseUnityPlugin
     {
         public const string Guid = "humanresistor.cu.backpackininventory";
-        public const string Version = "1.2.2";
+        public const string Version = "1.2.3";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> CfgEnabled;
@@ -37,7 +37,7 @@ namespace BackpackInInventory
             CfgSlotIds = Config.Bind("Inventory", "WearSlotIds", "back,thighback,thigh,belt,bandolier,torsofront", "这些穿戴槽位上的物品允许被放进物品栏，逗号分隔。");
             CfgExtraIds = Config.Bind("Inventory", "ExtraItemIds", "", "额外强制允许的物品 id，逗号分隔（不受槽位限制）。");
             CfgBlacklist = Config.Bind("Inventory", "BlacklistItemIds", "", "永远不改动的物品 id，逗号分隔。");
-            CfgVerbose = Config.Bind("Inventory", "VerboseLog", true, "放开每个物品时在日志里打印一行。");
+            CfgVerbose = Config.Bind("Inventory", "VerboseLog", false, "放开每个物品时在日志里打印一行（排查用）。");
             CfgClearSprites = Config.Bind("Inventory", "ClearWearableSpritesOnPickup", true, "防御性补丁：穿戴物放进物品栏槽位时清理多肢体贴图，避免残影。");
 
             Harmony harmony = new Harmony(Guid);
