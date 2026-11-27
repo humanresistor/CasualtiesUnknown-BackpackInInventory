@@ -107,7 +107,7 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 | Inventory / AllWearables | false | 放开**所有** wearable（含护甲/衣服/头盔），忽略槽位列表 |
 | Inventory / ExtraItemIds | 空 | 额外强制放开的物品 id |
 | Inventory / BlacklistItemIds | 空 | 永不改动 |
-| Inventory / VerboseLog | true | 逐个打印放开的物品 |
+| Inventory / VerboseLog | false | 逐个打印放开的物品（排查用） |
 | Inventory / ClearWearableSpritesOnPickup | true | 防御性补丁：穿戴物放进物品栏时清理多肢体贴图残影 |
 
 注意：BepInEx 优先读取已存在的配置文件，**改代码里的默认值不会覆盖已有配置**，需要同步改配置或删掉它重新生成。
@@ -208,7 +208,7 @@ Config file: BepInEx/config/humanresistor.cu.backpackininventory.cfg
 | Inventory / AllWearables | false | Unlock every wearable item (armor, clothing, helmets), ignoring the slot list |
 | Inventory / ExtraItemIds | (empty) | Extra item ids, comma separated |
 | Inventory / BlacklistItemIds | (empty) | Never touch these items |
-| Inventory / VerboseLog | true | Log every unlocked item |
+| Inventory / VerboseLog | false | Log every unlocked item (debugging) |
 | Inventory / ClearWearableSpritesOnPickup | true | Defensive patch: clear multi-limb sprites when a wearable is put into an inventory slot |
 
 ### Similar mod
