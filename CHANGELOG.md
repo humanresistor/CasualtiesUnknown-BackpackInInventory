@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.3
+- `VerboseLog` 默认改为 false：玩家日志里不再逐个打印放开的物品，只保留加载信息与汇总行
+
 ## 1.2.2
 - 新增防御性补丁：穿戴物放进物品栏槽位后调用 Wearable.ClearSprites()，修复多肢体贴图残影（配置项 ClearWearableSpritesOnPickup）
 
