@@ -112,7 +112,7 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 
 注意：BepInEx 优先读取已存在的配置文件，**改代码里的默认值不会覆盖已有配置**，需要同步改配置或删掉它重新生成。
 
-### 安装
+## 安装
 
 1. 游戏目录装 BepInEx 5.4.23.5 x64（解压到游戏根目录，出现 winhttp.dll 和 BepInEx 文件夹）
 2. 把 BackpackInInventory.dll 放进 BepInEx/plugins/ 目录
@@ -120,7 +120,9 @@ WearSlotIds = back,thighback,thigh,belt,bandolier,torsofront
 
 DLL 被游戏占用时无法覆盖，更新前先退出游戏。
 
-### 构建
+## 构建（改代码才需要）
+
+普通用户不用编译，直接下载 Release 里的 DLL 即可；只有想改代码时才需要下面这些。
 
 需要 .NET SDK（本项目用 8.0.400 验证）。
 
@@ -134,12 +136,12 @@ dotnet build -c Release
   Assembly-CSharp.dll、UnityEngine.dll、UnityEngine.CoreModule.dll
 - 本机游戏路径在 csproj 的 GameDir 属性里配置
 
-### 调试
+## 调试
 
 游戏内控制台（数字 1 左边那个反引号键）：spawn bigpack、spawn materialpouch、spawn duffelbag、spawn slingbag。
 日志：游戏目录下 BepInEx/LogOutput.log，搜索 Backpack In Inventory。
 
-### 同类 mod
+## 同类 mod
 
 Nexus 上还有一个范围更大的同类：[All Wearable Can Be Held](https://www.nexusmods.com/scavprototype/mods/369)（作者 winddramon），
 它无条件放开所有 wearable，没有配置项。两者改的是同一个游戏字段，**不要同时安装**。
@@ -186,6 +188,14 @@ Set AllWearables to true if you also want **armor, clothing and helmets** to be 
 1. Install BepInEx 5.4.23.5 x64 into the game root.
 2. Drop BackpackInInventory.dll into the BepInEx/plugins/ folder.
 3. Launch the game through Steam.
+
+Close the game before replacing the DLL, otherwise the file is locked.
+
+### Build (only if you change the code)
+
+Normal users do not need this — grab the DLL from Releases instead. Requires the .NET SDK
+(verified with 8.0.400): `dotnet build -c Release`, output in `bin/Release/netstandard2.1/`.
+The target framework must be **netstandard2.1**.
 
 ### Configuration
 
